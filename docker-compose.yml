@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_normaliser
+    restart: always
+    environment:
+      POSTGRES_DB: patientdata
+      POSTGRES_USER: normaliser
+      POSTGRES_PASSWORD: N0rm4l!zer
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: fhir_normaliser_app
+    restart: always
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/patientdata
+      SPRING_DATASOURCE_USERNAME: normaliser
+      SPRING_DATASOURCE_PASSWORD: N0rm4l!zer
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
