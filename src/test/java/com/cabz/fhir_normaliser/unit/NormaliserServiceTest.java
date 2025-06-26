@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static com.cabz.fhir_normaliser.model.Gender.MALE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,6 +66,7 @@ class NormaliserServiceTest {
 
         when(patientMapper.map(any(Patient.class))).thenReturn(mappedPatient);
         when(patientRepository.saveAll(any())).thenReturn(List.of(mappedPatient));
+        when(patientRepository.findByFhirId(any())).thenReturn(Optional.of(mappedPatient));
 
         List<MappedPatient> result = normaliserService.processBundle(bundleJson);
 

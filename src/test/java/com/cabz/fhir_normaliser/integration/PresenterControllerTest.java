@@ -35,7 +35,7 @@ class PresenterControllerTest {
     @Autowired
     private PatientRepository repository;
 
-    private static final String BUNDLE_ENDPOINT = "/api/presentation/patients";
+    private static final String BUNDLE_ENDPOINT = "/api/data/patients";
 
     private static final String FHIR_ID = "fhirId";
     private static final String GIVEN_NAME = "givenName";
