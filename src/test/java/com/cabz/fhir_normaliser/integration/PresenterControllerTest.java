@@ -1,5 +1,6 @@
 package com.cabz.fhir_normaliser.integration;
 
+import com.cabz.fhir_normaliser.dto.PatientResponseDto;
 import com.cabz.fhir_normaliser.model.MappedPatient;
 import com.cabz.fhir_normaliser.repository.PatientRepository;
 import org.junit.jupiter.api.Assertions;
@@ -10,18 +11,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
 @ActiveProfiles("test")
-class NormaliserControllerTest {
+class PresenterControllerTest {
 
     @LocalServerPort
     private int port;
@@ -32,28 +30,32 @@ class NormaliserControllerTest {
     @Autowired
     private PatientRepository repository;
 
-    private static final String BUNDLE_ENDPOINT = "/api/fhir/bundle";
+    private static final String BUNDLE_ENDPOINT = "/api/presentation/patients";
 
-    private static final String FHIR_ID = "urn:uuid:8c95253e-8ee8-9ae8-6d40-021d702dc78e";
+    private static final String FHIR_ID = "fhirId";
+    private static final String GIVEN_NAME = "givenName";
+    private static final String FAMILY_NAME = "familyName";
+    private static final String GENDER = "gender";
+    private static final String BIRTH_DATE = "birthDate";
 
     @Test
-    void shouldSaveMappedPatientsToDatabase() throws IOException {
+    void shouldReadMappedPatientsFromDatabase() {
 
-        String bundle = Files.readString(new ClassPathResource("bundles/valid-patient.json").getFile().toPath());
+        addBundle();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<String> request = new HttpEntity<>(bundle, headers);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
 
-        ResponseEntity<List<MappedPatient>> response = restTemplate.exchange(
+        ResponseEntity<List<PatientResponseDto>> response = restTemplate.exchange(
                 "http://localhost:" + port + BUNDLE_ENDPOINT,
-                HttpMethod.POST,
+                HttpMethod.GET,
                 request,
                 new ParameterizedTypeReference<>() {}
         );
 
-        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertNotNull(response.getBody());
         Assertions.assertEquals(1, response.getBody().size());
 
@@ -61,5 +63,16 @@ class NormaliserControllerTest {
         Assertions.assertEquals(1, all.size());
         MappedPatient mappedPatient = all.getFirst();
         Assertions.assertEquals(FHIR_ID, mappedPatient.getFhirId());
+    }
+
+    private void addBundle() {
+        MappedPatient mappedPatient = MappedPatient.builder()
+                .fhirId(FHIR_ID)
+                .givenName(GIVEN_NAME)
+                .familyName(FAMILY_NAME)
+                .gender(GENDER)
+                .birthDate(BIRTH_DATE)
+                .build();
+        repository.save(mappedPatient);
     }
 }

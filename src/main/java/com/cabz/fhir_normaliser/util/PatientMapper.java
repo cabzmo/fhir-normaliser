@@ -1,5 +1,6 @@
 package com.cabz.fhir_normaliser.util;
 
+import com.cabz.fhir_normaliser.dto.PatientResponseDto;
 import com.cabz.fhir_normaliser.model.MappedPatient;
 import org.hl7.fhir.r4.model.Patient;
 import org.mapstruct.Mapper;
@@ -30,7 +31,6 @@ public interface PatientMapper {
         return fhirPatient.getBirthDate() != null ? fhirPatient.getBirthDate().toString() : null;
     }
 
-
-//    PatientResponseDto map(MappedPatient patient);
+    PatientResponseDto map(MappedPatient patient);
 
 }
