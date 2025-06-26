@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PatientResponseDto {
     private String fhirId;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String gender;
     private String birthDate;
 }

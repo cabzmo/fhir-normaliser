@@ -35,15 +35,9 @@ public interface PatientMapper {
         };
     }
 
-    @Mapping(target = "fullName", expression = "java(mapFullName(patient.getGivenName(), patient.getFamilyName()))")
+    @Mapping(target = "firstName", source = "patient.givenName")
+    @Mapping(target = "lastName", source = "patient.familyName")
     @Mapping(target = "gender", expression = "java(patient.getGender().toString())")
     @Mapping(target = "birthDate", expression = "java(patient.getBirthDate().toString())")
     PatientResponseDto map(MappedPatient patient);
-
-    default String mapFullName(String givenName, String familyName) {
-        if (givenName != null && familyName != null) {
-            return String.join(" ", givenName, familyName);
-        }
-        return null;
-    }
 }

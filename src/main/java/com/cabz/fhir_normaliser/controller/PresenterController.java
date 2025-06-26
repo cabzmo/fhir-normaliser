@@ -4,22 +4,31 @@ import com.cabz.fhir_normaliser.dto.PatientResponseDto;
 import com.cabz.fhir_normaliser.service.PresenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/presentation")
+@Controller
+@RequestMapping("/api")
 public class PresenterController {
 
     @Autowired
     private PresenterService presenterService;
 
-    @GetMapping("/patients")
+    @GetMapping("presentation/patients")
     public ResponseEntity<List<PatientResponseDto>> getAllPatients() {
         List<PatientResponseDto> patients = presenterService.getAllPatients();
         return ResponseEntity.ok(patients);
     }
+
+    @GetMapping("/view/patients")
+    public String viewPatientsPage(Model model) {
+        List<PatientResponseDto> patients = presenterService.getAllPatients();
+        model.addAttribute("patients", patients);
+        return "patients";
+    }
+
 }

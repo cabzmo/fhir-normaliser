@@ -50,7 +50,8 @@ class PresenterServiceTest {
 
         PatientResponseDto expectedPatientDto = PatientResponseDto.builder()
                 .fhirId(FHIR_ID)
-                .fullName(GIVEN_NAME + " " + FAMILY_NAME)
+                .firstName(GIVEN_NAME)
+                .lastName(FAMILY_NAME)
                 .gender(String.valueOf(GENDER))
                 .birthDate(String.valueOf(BIRTH_DATE))
                 .build();
@@ -74,7 +75,8 @@ class PresenterServiceTest {
         PatientResponseDto actualPatientDto = result.getFirst();
 
         assertEquals(expectedPatientDto.getFhirId(), actualPatientDto.getFhirId());
-        assertEquals(expectedPatientDto.getFullName(), actualPatientDto.getFullName());
+        assertEquals(expectedPatientDto.getFirstName(), actualPatientDto.getFirstName());
+        assertEquals(expectedPatientDto.getLastName(), actualPatientDto.getLastName());
         assertEquals(expectedPatientDto.getGender(), actualPatientDto.getGender());
         assertEquals(expectedPatientDto.getBirthDate(), actualPatientDto.getBirthDate());
 
