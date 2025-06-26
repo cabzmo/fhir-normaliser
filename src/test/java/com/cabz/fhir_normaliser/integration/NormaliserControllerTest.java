@@ -2,7 +2,6 @@ package com.cabz.fhir_normaliser.integration;
 
 import com.cabz.fhir_normaliser.model.MappedPatient;
 import com.cabz.fhir_normaliser.repository.PatientRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -17,6 +16,9 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
@@ -53,13 +55,13 @@ class NormaliserControllerTest {
                 new ParameterizedTypeReference<>() {}
         );
 
-        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        Assertions.assertNotNull(response.getBody());
-        Assertions.assertEquals(1, response.getBody().size());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
 
         List<MappedPatient> all = repository.findAll();
-        Assertions.assertEquals(1, all.size());
+        assertEquals(1, all.size());
         MappedPatient mappedPatient = all.getFirst();
-        Assertions.assertEquals(FHIR_ID, mappedPatient.getFhirId());
+        assertEquals(FHIR_ID, mappedPatient.getFhirId());
     }
 }

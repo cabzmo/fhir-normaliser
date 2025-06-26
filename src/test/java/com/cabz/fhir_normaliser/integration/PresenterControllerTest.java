@@ -4,7 +4,6 @@ import com.cabz.fhir_normaliser.dto.PatientResponseDto;
 import com.cabz.fhir_normaliser.model.Gender;
 import com.cabz.fhir_normaliser.model.MappedPatient;
 import com.cabz.fhir_normaliser.repository.PatientRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -19,6 +18,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.cabz.fhir_normaliser.model.Gender.MALE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
@@ -59,18 +60,18 @@ class PresenterControllerTest {
                 new ParameterizedTypeReference<>() {}
         );
 
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assertions.assertNotNull(response.getBody());
-        Assertions.assertEquals(1, response.getBody().size());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
 
         List<MappedPatient> all = repository.findAll();
-        Assertions.assertEquals(1, all.size());
+        assertEquals(1, all.size());
         MappedPatient mappedPatient = all.getFirst();
-        Assertions.assertEquals(FHIR_ID, mappedPatient.getFhirId());
-        Assertions.assertEquals(GIVEN_NAME, mappedPatient.getGivenName());
-        Assertions.assertEquals(FAMILY_NAME, mappedPatient.getFamilyName());
-        Assertions.assertEquals(GENDER, mappedPatient.getGender());
-        Assertions.assertEquals(BIRTH_DATE, mappedPatient.getBirthDate());
+        assertEquals(FHIR_ID, mappedPatient.getFhirId());
+        assertEquals(GIVEN_NAME, mappedPatient.getGivenName());
+        assertEquals(FAMILY_NAME, mappedPatient.getFamilyName());
+        assertEquals(GENDER, mappedPatient.getGender());
+        assertEquals(BIRTH_DATE, mappedPatient.getBirthDate());
     }
 
     private void addBundle() {
