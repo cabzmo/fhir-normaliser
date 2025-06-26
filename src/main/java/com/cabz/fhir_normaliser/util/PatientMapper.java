@@ -1,12 +1,16 @@
 package com.cabz.fhir_normaliser.util;
 
 import com.cabz.fhir_normaliser.dto.PatientResponseDto;
+import com.cabz.fhir_normaliser.model.Gender;
 import com.cabz.fhir_normaliser.model.MappedPatient;
+import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.Patient;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+
+import java.time.LocalDate;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PatientMapper {
@@ -18,17 +22,21 @@ public interface PatientMapper {
     @Mapping(target = "givenName", source = "fhirPatient.nameFirstRep.givenAsSingleString")
     @Mapping(target = "familyName", source = "fhirPatient.nameFirstRep.family")
     @Mapping(target = "gender",
-            expression = "java(mapGender(fhirPatient))")
-    @Mapping(target = "birthDate",
-            expression = "java(mapBirthDate(fhirPatient))")
+            expression = "java(mapGender(fhirPatient.getGender()))")
+    @Mapping(target = "birthDate", source = "fhirPatient.birthDate")
+//    @Mapping(target = "birthDate",
+//            expression = "java(mapBirthDate(fhirPatient))")
     MappedPatient map(Patient fhirPatient);
 
-    default String mapGender(Patient fhirPatient) {
-        return fhirPatient.getGender() != null ? fhirPatient.getGender().toCode() : null;
-    }
-
-    default String mapBirthDate(Patient fhirPatient) {
-        return fhirPatient.getBirthDate() != null ? fhirPatient.getBirthDate().toString() : null;
+    default Gender mapGender(AdministrativeGender gender) {
+        if (gender == null) return null;
+        return switch (gender) {
+            case MALE -> Gender.MALE;
+            case FEMALE -> Gender.FEMALE;
+            case OTHER -> Gender.OTHER;
+            case UNKNOWN -> Gender.UNKNOWN;
+            default -> Gender.NULL;
+        };
     }
 
     PatientResponseDto map(MappedPatient patient);

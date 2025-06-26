@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,6 +26,6 @@ public class MappedPatient {
     private String fhirId;
     private String givenName;
     private String familyName;
-    private String gender;
-    private String birthDate;
+    private Gender gender;
+    private LocalDate birthDate;
 }
