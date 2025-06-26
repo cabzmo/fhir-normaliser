@@ -5,5 +5,5 @@ public enum Gender {
     FEMALE,
     OTHER,
     UNKNOWN,
-    NULL;
+    NULL
 }

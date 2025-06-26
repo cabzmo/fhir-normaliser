@@ -10,8 +10,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-import java.time.LocalDate;
-
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PatientMapper {
 
@@ -24,8 +22,6 @@ public interface PatientMapper {
     @Mapping(target = "gender",
             expression = "java(mapGender(fhirPatient.getGender()))")
     @Mapping(target = "birthDate", source = "fhirPatient.birthDate")
-//    @Mapping(target = "birthDate",
-//            expression = "java(mapBirthDate(fhirPatient))")
     MappedPatient map(Patient fhirPatient);
 
     default Gender mapGender(AdministrativeGender gender) {
@@ -39,6 +35,15 @@ public interface PatientMapper {
         };
     }
 
+    @Mapping(target = "fullName", expression = "java(mapFullName(patient.getGivenName(), patient.getFamilyName()))")
+    @Mapping(target = "gender", expression = "java(patient.getGender().toString())")
+    @Mapping(target = "birthDate", expression = "java(patient.getBirthDate().toString())")
     PatientResponseDto map(MappedPatient patient);
 
+    default String mapFullName(String givenName, String familyName) {
+        if (givenName != null && familyName != null) {
+            return String.join(" ", givenName, familyName);
+        }
+        return null;
+    }
 }

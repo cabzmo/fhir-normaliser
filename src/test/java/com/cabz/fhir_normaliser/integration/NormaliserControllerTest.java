@@ -2,6 +2,7 @@ package com.cabz.fhir_normaliser.integration;
 
 import com.cabz.fhir_normaliser.model.MappedPatient;
 import com.cabz.fhir_normaliser.repository.PatientRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -37,6 +38,11 @@ class NormaliserControllerTest {
     private static final String BUNDLE_ENDPOINT = "/api/fhir/bundle";
 
     private static final String FHIR_ID = "urn:uuid:8c95253e-8ee8-9ae8-6d40-021d702dc78e";
+
+    @BeforeEach
+    void setUp() {
+        repository.deleteAll();
+    }
 
     @Test
     void shouldSaveMappedPatientsToDatabase() throws IOException {
